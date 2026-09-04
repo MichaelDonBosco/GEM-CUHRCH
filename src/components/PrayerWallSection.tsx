@@ -167,17 +167,31 @@ export const PrayerWallSection: React.FC<PrayerWallSectionProps> = ({
 
             {/* Action Bar */}
             <div className="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between">
-              <button
-                onClick={() => onTogglePrayed(prayer.id)}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  prayer.hasPrayed
-                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                    : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-                }`}
-              >
-                <Heart className={`w-3.5 h-3.5 ${prayer.hasPrayed ? 'fill-rose-600 text-rose-600' : 'text-stone-500'}`} />
-                <span>{prayer.hasPrayed ? 'Prayed' : 'I Prayed For This'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onTogglePrayed(prayer.id)}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    prayer.hasPrayed
+                      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                      : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                  }`}
+                >
+                  <Heart className={`w-3.5 h-3.5 ${prayer.hasPrayed ? 'fill-rose-600 text-rose-600' : 'text-stone-500'}`} />
+                  <span>{prayer.hasPrayed ? 'Prayed' : 'I Prayed For This'}</span>
+                </button>
+
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                    `🕊️ *Prayer Request from GEM Church Community*\n\n"${prayer.content}"\n— ${prayer.author} (${prayer.category})\n\nJoin us in lifting this prayer: https://gemchurch.org`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] transition-colors"
+                  title="Share Prayer Request on WhatsApp"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                </a>
+              </div>
 
               <span className="text-xs text-stone-500 font-medium">
                 {prayer.prayersCount} prayers lifted

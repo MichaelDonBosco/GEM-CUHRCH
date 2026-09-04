@@ -17,25 +17,27 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { BelieverCelebration } from '../types';
-import { INITIAL_CELEBRATIONS } from '../data/mockChurchData';
+import { churchDb } from '../services/db';
+import { generateCelebrationWhatsAppMessage, createWhatsAppUrl } from '../utils/whatsapp';
 
-const STORAGE_KEY = 'gem_church_believer_celebrations_v1';
 const NOTIF_STORAGE_KEY = 'gem_church_celebrations_reminder_enabled';
 
 export const CelebrationsSection: React.FC = () => {
   const [celebrations, setCelebrations] = useState<BelieverCelebration[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error(e);
-    }
-    return INITIAL_CELEBRATIONS;
+    return churchDb.getAll<BelieverCelebration>('believers');
   });
 
   const [reminderEnabled, setReminderEnabled] = useState<boolean>(() => {
     return localStorage.getItem(NOTIF_STORAGE_KEY) === 'true';
   });
+
+  // Subscribe to database changes
+  useEffect(() => {
+    const unsub = churchDb.subscribe('believers', (_, data) => {
+      setCelebrations(data);
+    });
+    return () => unsub();
+  }, []);
 
   const [filterView, setFilterView] = useState<'today' | 'week' | 'month' | 'all'>('today');
   const [searchTerm, setSearchTerm] = useState('');
@@ -54,14 +56,6 @@ export const CelebrationsSection: React.FC = () => {
     spouseName: '',
     notes: ''
   });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(celebrations));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [celebrations]);
 
   const today = new Date();
   const currentMonth = today.getMonth() + 1;
@@ -140,7 +134,7 @@ export const CelebrationsSection: React.FC = () => {
       isRegisteredByUser: true
     };
 
-    setCelebrations(prev => [newEntry, ...prev]);
+    churchDb.add('believers', newEntry);
     setShowAddModal(false);
     setFormData({
       name: '',
@@ -157,20 +151,19 @@ export const CelebrationsSection: React.FC = () => {
 
   // Bless / Send Wish counter
   const handleBless = (id: string) => {
-    setCelebrations(prev => prev.map(c => c.id === id ? { ...c, wishesCount: c.wishesCount + 1 } : c));
+    churchDb.incrementCounter('believers', id, 'wishesCount', 1);
     setJustBlessedId(id);
     setTimeout(() => setJustBlessedId(null), 2500);
   };
 
   // Generate WhatsApp Message
   const getWhatsAppLink = (cel: BelieverCelebration) => {
-    const cleanPhone = cel.phone.replace(/[^0-9]/g, '');
-    const greeting = cel.type === 'birthday' 
-      ? `🎉 Blessed Birthday Greetings from GEM Church Tuticorin!`
-      : `💍 Happy Wedding Anniversary Greetings from GEM Church Tuticorin!`;
-    const verse = `"The LORD bless thee, and keep thee: The LORD make his face shine upon thee..." — Numbers 6:24-26\n\nMay God fill your home with peace, health, and abundant joy. Prayers from Rev. L. Navaratnam & church family!`;
-    const message = encodeURIComponent(`${greeting}\n\nDear ${cel.name},\n\n${verse}`);
-    return `https://wa.me/${cleanPhone}?text=${message}`;
+    const message = generateCelebrationWhatsAppMessage({
+      memberName: cel.name,
+      type: cel.type,
+      spouseName: cel.spouseName
+    });
+    return createWhatsAppUrl(cel.phone, message);
   };
 
   return (

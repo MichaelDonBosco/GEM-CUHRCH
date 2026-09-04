@@ -18,11 +18,12 @@ import { GivingSection } from './components/GivingSection';
 import { ConnectSection } from './components/ConnectSection';
 import { Footer } from './components/Footer';
 import { LocalImportModal } from './components/LocalImportModal';
+import { ChurchDatabaseModal } from './components/ChurchDatabaseModal';
+import { churchDb } from './services/db';
 
 import { 
   INITIAL_SERMONS, 
   INITIAL_EVENTS, 
-  INITIAL_PRAYERS, 
   INITIAL_DEVOTIONALS, 
   MINISTRIES 
 } from './data/mockChurchData';
@@ -31,40 +32,44 @@ import { PrayerRequest } from './types';
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [selectedSermonId, setSelectedSermonId] = useState<string>(INITIAL_SERMONS[0].id);
-  const [prayers, setPrayers] = useState<PrayerRequest[]>(INITIAL_PRAYERS);
+  const [prayers, setPrayers] = useState<PrayerRequest[]>(() => churchDb.getAll<PrayerRequest>('prayers'));
   const [isLocalSyncModalOpen, setIsLocalSyncModalOpen] = useState<boolean>(false);
+  const [isDatabaseModalOpen, setIsDatabaseModalOpen] = useState<boolean>(false);
+
+  // Subscribe to prayers database changes
+  React.useEffect(() => {
+    const unsub = churchDb.subscribe('prayers', (_, data) => {
+      setPrayers(data);
+    });
+    return () => unsub();
+  }, []);
 
   const handleSelectSermon = (id: string) => {
     setSelectedSermonId(id);
   };
 
   const handleAddPrayer = (newPrayer: PrayerRequest) => {
-    setPrayers(prev => [newPrayer, ...prev]);
+    churchDb.add('prayers', newPrayer);
   };
 
   const handleTogglePrayed = (id: string) => {
-    setPrayers(prev =>
-      prev.map(prayer => {
-        if (prayer.id === id) {
-          const hasPrayed = !prayer.hasPrayed;
-          return {
-            ...prayer,
-            hasPrayed,
-            prayersCount: prayer.prayersCount + (hasPrayed ? 1 : -1)
-          };
-        }
-        return prayer;
-      })
-    );
+    const existing = prayers.find(p => p.id === id);
+    if (!existing) return;
+    const hasPrayed = !existing.hasPrayed;
+    churchDb.update<PrayerRequest>('prayers', id, {
+      hasPrayed,
+      prayersCount: existing.prayersCount + (hasPrayed ? 1 : -1)
+    });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50 text-stone-900 selection:bg-amber-400 selection:text-stone-950 font-sans antialiased">
+    <div className="min-h-screen flex flex-col bg-[#faf8f5] text-stone-900 selection:bg-[#fbbf24] selection:text-[#043e32] font-sans antialiased">
       {/* Primary Sticky Header */}
       <Header 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         onOpenLocalSync={() => setIsLocalSyncModalOpen(true)}
+        onOpenDatabase={() => setIsDatabaseModalOpen(true)}
       />
 
       {/* Main Dynamic View Content */}
@@ -184,6 +189,13 @@ export default function App() {
       <Footer 
         onNavigate={setActiveTab} 
         onOpenLocalSync={() => setIsLocalSyncModalOpen(true)}
+        onOpenDatabase={() => setIsDatabaseModalOpen(true)}
+      />
+
+      {/* Church Local Database & Directory Modal */}
+      <ChurchDatabaseModal
+        isOpen={isDatabaseModalOpen}
+        onClose={() => setIsDatabaseModalOpen(false)}
       />
 
       {/* Local Project Sync & File Import Modal */}

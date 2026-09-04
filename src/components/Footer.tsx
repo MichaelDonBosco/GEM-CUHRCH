@@ -6,17 +6,21 @@ import {
   Mail, 
   Heart, 
   ArrowUp, 
-  FolderArchive 
+  FolderArchive,
+  Database,
+  MessageCircle
 } from 'lucide-react';
 import { CHURCH_INFO } from '../data/mockChurchData';
 import { GEM_CHURCH_LOGO } from '../assets/logo';
+import { CHURCH_WHATSAPP_PRIMARY } from '../utils/whatsapp';
 
 interface FooterProps {
   onNavigate: (tab: string) => void;
   onOpenLocalSync: () => void;
+  onOpenDatabase?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync, onOpenDatabase }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -140,13 +144,33 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync }) =
               <span>{CHURCH_INFO.email}</span>
             </div>
 
-            <div className="pt-3">
+            <div className="pt-3 space-y-2">
+              <a
+                href={`https://api.whatsapp.com/send?phone=${CHURCH_WHATSAPP_PRIMARY}&text=Praise%20the%20Lord%20Pastor!%20I%20am%20contacting%20GEM%20Church%20Tuticorin`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2 px-3 rounded-lg bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border border-[#25D366]/40 text-xs font-semibold transition-colors flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>WhatsApp Sanctuary</span>
+              </a>
+
+              {onOpenDatabase && (
+                <button
+                  onClick={onOpenDatabase}
+                  className="w-full py-2 px-3 rounded-lg bg-[#043e32] hover:bg-[#065f46] text-[#fbbf24] border border-[#065f46] text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <Database className="w-3.5 h-3.5" />
+                  <span>Church Directory & Database</span>
+                </button>
+              )}
+
               <button
                 onClick={onOpenLocalSync}
-                className="w-full py-2 px-3 rounded-lg bg-[#043e32] hover:bg-[#065f46] text-[#fbbf24] border border-[#065f46] text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+                className="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-emerald-300 text-[11px] font-medium transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
-                <FolderArchive className="w-3.5 h-3.5" />
-                <span>Sync GEM Files</span>
+                <FolderArchive className="w-3 h-3" />
+                <span>Sync GEM Project Files</span>
               </button>
             </div>
           </div>
