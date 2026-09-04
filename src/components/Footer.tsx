@@ -1,70 +1,169 @@
-import { Link } from 'react-router-dom';
-import { MapPin, Phone, Facebook, Instagram, Youtube } from 'lucide-react';
+import React from 'react';
+import { 
+  Sparkles, 
+  MapPin, 
+  Phone, 
+  Mail, 
+  Heart, 
+  ArrowUp, 
+  FolderArchive 
+} from 'lucide-react';
+import { CHURCH_INFO } from '../data/mockChurchData';
+import { GEM_CHURCH_LOGO } from '../assets/logo';
 
-export const Footer = () => {
+interface FooterProps {
+  onNavigate: (tab: string) => void;
+  onOpenLocalSync: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync }) => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 rounded-full overflow-hidden">
+    <footer className="bg-[#011712] text-slate-300 border-t border-[#065f46] text-xs">
+      {/* Top Banner Statement */}
+      <div className="bg-[#043e32] py-8 border-b border-[#065f46]/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="font-cinzel text-lg sm:text-xl font-bold text-[#fbbf24] tracking-wide mb-1">
+            Glorious Evangelical Ministries (GEM Church Tuty)
+          </p>
+          <p className="font-scripture italic text-sm text-emerald-100">
+            {CHURCH_INFO.tagline}
+          </p>
+          <p className="text-xs text-emerald-200/90 mt-1">
+            “Pure and undefiled religion before God the Father is this: to care for orphans and widows in their distress, and to keep oneself unstained by the world.” — James 1:27
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          {/* Col 1: Brand & Pastors */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#fbbf24] shadow-md flex-shrink-0 bg-white p-0.5">
                 <img 
-                  src="https://i.postimg.cc/Bv1wzvn6/Whats_App_Image_2026_02_26_at_17_40_51.jpg" 
+                  src={GEM_CHURCH_LOGO} 
                   alt="Glorious Evangelical Ministries Logo" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-full"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <span className="text-xl font-bold text-white">Glorious Evangelical Ministries</span>
+              <div>
+                <span className="font-cinzel text-base font-bold text-white tracking-wider block">
+                  GEM CHURCH TUTY
+                </span>
+                <span className="text-[10px] text-[#fbbf24] font-semibold tracking-wider uppercase">
+                  Glorious Evangelical Ministries
+                </span>
+              </div>
             </div>
-            <p className="text-slate-400 max-w-md mb-6 leading-relaxed">
-              "Pure and undefiled religion before God the Father is this: to care for orphans and widows in their distress, and to keep oneself unstained by the world." — James 1:27
+            <p className="text-emerald-100/80 text-xs leading-relaxed">
+              Walking in love, holiness, and service. Carrying the light of Jesus to Tuticorin and mission fields across India, Nepal, and Bhutan.
             </p>
-            <div className="flex space-x-4">
-              <a href="https://facebook.com/profile.php?id=100064793076144" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-church-accent transition-colors">
-                <Facebook size={20} />
-              </a>
-              <a href="https://instagram.com/gloriousevangelicalministries?igsh=eWFyZzN5djI2Ym5l" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-church-accent transition-colors">
-                <Instagram size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-church-accent transition-colors">
-                <Youtube size={20} />
-              </a>
+            <div className="pt-2 text-[11px] text-emerald-100/90">
+              <span className="font-semibold text-white block">Pastoral Leadership:</span>
+              <span className="text-[#fbbf24]">{CHURCH_INFO.leadPastor}</span>
             </div>
           </div>
 
+          {/* Col 2: Service Times */}
           <div>
-            <h4 className="text-white font-bold mb-6">Contact Us</h4>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-start space-x-3">
-                <MapPin size={18} className="text-church-accent shrink-0 mt-1" />
-                <span>7V/6B SundaravelPuram, Tuticorin – 628002</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={18} className="text-church-accent shrink-0" />
-                <span>+91 99943 01540</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={18} className="text-church-accent shrink-0" />
-                <span>+91 99946 45090</span>
-              </li>
+            <h4 className="font-cinzel text-xs font-bold text-[#fbbf24] uppercase tracking-wider mb-3">
+              Weekly Gatherings
+            </h4>
+            <ul className="space-y-2 text-slate-300">
+              {CHURCH_INFO.serviceTimes.map((service, idx) => (
+                <li key={idx} className="border-b border-[#065f46]/40 pb-1.5 last:border-0">
+                  <span className="font-semibold text-white block text-xs">{service.name}</span>
+                  <span className="text-[11px] text-emerald-300">{service.time}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Col 3: Quick Navigation */}
           <div>
-            <h4 className="text-white font-bold mb-6">Quick Links</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/about" className="hover:text-church-accent transition-colors">Statement of Faith</Link></li>
-              <li><Link to="/missions" className="hover:text-church-accent transition-colors">Mission Fields</Link></li>
-              <li><Link to="/donate" className="hover:text-church-accent transition-colors">Online Offering</Link></li>
-              <li><Link to="/leadership" className="hover:text-church-accent transition-colors">Our Leadership</Link></li>
+            <h4 className="font-cinzel text-xs font-bold text-[#fbbf24] uppercase tracking-wider mb-3">
+              Church Life & Missions
+            </h4>
+            <ul className="space-y-1.5 text-slate-300">
+              {[
+                { id: 'home', label: 'HOME SANCTUARY' },
+                { id: 'sermons', label: 'SERMONS & NOTES' },
+                { id: 'live', label: 'LIVE BROADCAST' },
+                { id: 'missions', label: 'GLOBAL & NATIONAL MISSIONS' },
+                { id: 'celebrations', label: 'BELIEVER CELEBRATIONS & REMINDERS' },
+                { id: 'events', label: 'UPCOMING GATHERINGS' },
+                { id: 'prayer', label: 'PRAYER WALL' },
+                { id: 'devotional', label: 'DAILY DEVOTIONAL' },
+                { id: 'ministries', label: 'CHURCH MINISTRIES' },
+                { id: 'giving', label: 'ONLINE GIVING & TITHES' },
+                { id: 'connect', label: 'CONTACT SANCTUARY' },
+              ].map((link) => (
+                <li key={link.id}>
+                  <button
+                    onClick={() => {
+                      onNavigate(link.id);
+                      scrollToTop();
+                    }}
+                    className="hover:text-[#fbbf24] transition-colors cursor-pointer text-left uppercase text-[11px] font-medium"
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
             </ul>
+          </div>
+
+          {/* Col 4: Contact & Location */}
+          <div className="space-y-2.5">
+            <h4 className="font-cinzel text-xs font-bold text-[#fbbf24] uppercase tracking-wider mb-3">
+              Contact & Sanctuary
+            </h4>
+            <div className="flex items-start gap-2 text-slate-300">
+              <MapPin className="w-4 h-4 text-[#fbbf24] flex-shrink-0 mt-0.5" />
+              <span>7V/6B SundaravelPuram, Tuticorin – 628002</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-300">
+              <Phone className="w-3.5 h-3.5 text-[#fbbf24] flex-shrink-0" />
+              <span>+91 99943 01540</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-300">
+              <Phone className="w-3.5 h-3.5 text-[#fbbf24] flex-shrink-0" />
+              <span>+91 99946 45090</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-300">
+              <Mail className="w-3.5 h-3.5 text-[#fbbf24] flex-shrink-0" />
+              <span>{CHURCH_INFO.email}</span>
+            </div>
+
+            <div className="pt-3">
+              <button
+                onClick={onOpenLocalSync}
+                className="w-full py-2 px-3 rounded-lg bg-[#043e32] hover:bg-[#065f46] text-[#fbbf24] border border-[#065f46] text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+              >
+                <FolderArchive className="w-3.5 h-3.5" />
+                <span>Sync GEM Files</span>
+              </button>
+            </div>
           </div>
         </div>
-        <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} Glorious Evangelical Ministries. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Walking in Love, Holiness, and Service.</p>
+
+        {/* Bottom copyright */}
+        <div className="pt-8 border-t border-[#065f46]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-emerald-200/60">
+          <p>© 2026 Glorious Evangelical Ministries (GEM Church Tuty). All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={scrollToTop}
+              className="inline-flex items-center gap-1 hover:text-[#fbbf24] transition-colors cursor-pointer"
+            >
+              <span>Back to Top</span>
+              <ArrowUp className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>
