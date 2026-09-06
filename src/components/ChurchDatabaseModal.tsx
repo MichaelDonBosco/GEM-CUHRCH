@@ -21,7 +21,9 @@ import {
   BookOpen, 
   Users, 
   RefreshCw,
-  Gift
+  Gift,
+  Camera,
+  User
 } from 'lucide-react';
 import { churchDb, DbCollectionName } from '../services/db';
 import { BelieverCelebration, PrayerRequest, ChurchEvent, MissionField } from '../types';
@@ -54,8 +56,26 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
     phone: '',
     spouseName: '',
     area: 'SundaravelPuram, Tuticorin',
-    notes: ''
+    notes: '',
+    photoUrl: ''
   });
+
+  const handleBelieverPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Please select an image smaller than 5MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (ev.target?.result) {
+          setNewBeliever(prev => ({ ...prev, photoUrl: ev.target!.result as string }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Load items from churchDb
   const refreshItems = () => {
@@ -143,6 +163,7 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
       area: newBeliever.area.trim() || 'Tuticorin',
       notes: newBeliever.notes.trim(),
       wishesCount: 0,
+      photoUrl: newBeliever.photoUrl.trim() || undefined,
       isRegisteredByUser: true
     });
 
@@ -156,7 +177,8 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
       phone: '',
       spouseName: '',
       area: 'SundaravelPuram, Tuticorin',
-      notes: ''
+      notes: '',
+      photoUrl: ''
     });
     showStatus('New Believer celebration registered in church database!');
   };
@@ -187,7 +209,7 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-cinzel text-lg font-bold text-white tracking-wide">
-                  Sanctuary Church Database
+                  GEM Church Database
                 </h3>
                 <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#fbbf24] text-[#043e32]">
                   LIVE REPOSITORY
@@ -346,30 +368,44 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
                         className="bg-white rounded-xl p-4 border border-emerald-950/15 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-stone-900 text-sm">
-                                {believer.name}
-                              </span>
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                believer.type === 'anniversary'
-                                  ? 'bg-rose-100 text-rose-700'
-                                  : 'bg-emerald-100 text-emerald-800'
-                              }`}>
-                                {believer.type}
-                              </span>
+                          <div className="flex items-center gap-3">
+                            <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-[#fbbf24]/70 bg-stone-100 flex-shrink-0 flex items-center justify-center shadow-xs">
+                              {believer.photoUrl ? (
+                                <img 
+                                  src={believer.photoUrl} 
+                                  alt={believer.name} 
+                                  className="w-full h-full object-cover" 
+                                  referrerPolicy="no-referrer"
+                                />
+                              ) : (
+                                <User className="w-5 h-5 text-emerald-800/60" />
+                              )}
                             </div>
-                            {believer.spouseName && (
-                              <p className="text-xs text-stone-500 mt-0.5">
-                                Spouse: <span className="font-medium text-stone-700">{believer.spouseName}</span>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-stone-900 text-sm">
+                                  {believer.name}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                  believer.type === 'anniversary'
+                                    ? 'bg-rose-100 text-rose-700'
+                                    : 'bg-emerald-100 text-emerald-800'
+                                }`}>
+                                  {believer.type}
+                                </span>
+                              </div>
+                              {believer.spouseName && (
+                                <p className="text-xs text-stone-500 mt-0.5">
+                                  Spouse: <span className="font-medium text-stone-700">{believer.spouseName}</span>
+                                </p>
+                              )}
+                              <p className="text-xs text-emerald-800 font-medium mt-1 flex items-center gap-1.5">
+                                <Calendar className="w-3.5 h-3.5 text-[#fbbf24]" />
+                                <span>{dateStr}</span>
+                                <span className="text-stone-300">•</span>
+                                <span>{believer.area}</span>
                               </p>
-                            )}
-                            <p className="text-xs text-emerald-800 font-medium mt-1 flex items-center gap-1.5">
-                              <Calendar className="w-3.5 h-3.5 text-[#fbbf24]" />
-                              <span>{dateStr}</span>
-                              <span className="text-stone-300">•</span>
-                              <span>{believer.area}</span>
-                            </p>
+                            </div>
                           </div>
 
                           <button
@@ -547,7 +583,7 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
               className="inline-flex items-center gap-1 text-emerald-700 font-semibold hover:underline"
             >
               <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-              WhatsApp Sanctuary Help
+              WhatsApp Church Help
             </a>
             <button
               onClick={onClose}
@@ -563,7 +599,7 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
       {/* Add Believer Submodal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-emerald-900/20">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-emerald-900/20 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-100 mb-4">
               <h4 className="font-cinzel text-base font-bold text-stone-900">
                 Register Believer Celebration Date
@@ -599,6 +635,96 @@ export const ChurchDatabaseModal: React.FC<ChurchDatabaseModalProps> = ({
                   >
                     💍 Wedding Anniversary
                   </button>
+                </div>
+              </div>
+
+              {/* Profile Picture Upload & Presets */}
+              <div>
+                <label className="font-semibold text-stone-700 block mb-1">
+                  Profile Picture (Optional)
+                </label>
+                <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-center gap-3">
+                  <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#043e32] bg-white flex-shrink-0 flex items-center justify-center shadow-xs">
+                    {newBeliever.photoUrl ? (
+                      <img 
+                        src={newBeliever.photoUrl} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <Camera className="w-6 h-6 text-stone-400" />
+                    )}
+                    {newBeliever.photoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setNewBeliever(prev => ({ ...prev, photoUrl: '' }))}
+                        className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity text-white cursor-pointer"
+                        title="Remove photo"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <label
+                        htmlFor="db-believer-photo-file"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#043e32] hover:bg-[#065f46] text-white font-semibold text-[11px] cursor-pointer transition-colors shadow-xs"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-[#fbbf24]" />
+                        <span>Upload From Device</span>
+                      </label>
+                      <input
+                        id="db-believer-photo-file"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleBelieverPhotoUpload}
+                      />
+                      {newBeliever.photoUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setNewBeliever(prev => ({ ...prev, photoUrl: '' }))}
+                          className="text-[11px] text-rose-600 hover:text-rose-700 underline cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      type="url"
+                      placeholder="Or paste photo URL..."
+                      value={newBeliever.photoUrl}
+                      onChange={(e) => setNewBeliever(prev => ({ ...prev, photoUrl: e.target.value }))}
+                      className="w-full px-2.5 py-1 text-[11px] rounded-lg bg-white border border-stone-300 text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#043e32]"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick Avatar Presets */}
+                <div className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+                  <span className="text-[10px] text-stone-500 font-medium flex-shrink-0">Presets:</span>
+                  {[
+                    { label: 'Brother', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80' },
+                    { label: 'Sister', url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80' },
+                    { label: 'Couple', url: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=300&q=80' },
+                    { label: 'Family', url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=300&q=80' }
+                  ].map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => setNewBeliever(prev => ({ ...prev, photoUrl: preset.url }))}
+                      className={`px-2 py-0.5 rounded text-[10px] border transition-colors flex items-center gap-1 flex-shrink-0 cursor-pointer ${
+                        newBeliever.photoUrl === preset.url
+                          ? 'bg-[#043e32] text-white border-[#043e32] font-bold'
+                          : 'bg-white text-stone-700 border-stone-300 hover:border-[#043e32]'
+                      }`}
+                    >
+                      <img src={preset.url} alt="" className="w-3.5 h-3.5 rounded-full object-cover" />
+                      <span>{preset.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 

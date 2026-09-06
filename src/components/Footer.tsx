@@ -95,7 +95,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync, onO
             </h4>
             <ul className="space-y-1.5 text-slate-300">
               {[
-                { id: 'home', label: 'HOME SANCTUARY' },
+                { id: 'home', label: 'HOME CHURCH' },
                 { id: 'sermons', label: 'SERMONS & NOTES' },
                 { id: 'live', label: 'LIVE BROADCAST' },
                 { id: 'missions', label: 'GLOBAL & NATIONAL MISSIONS' },
@@ -105,7 +105,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync, onO
                 { id: 'devotional', label: 'DAILY DEVOTIONAL' },
                 { id: 'ministries', label: 'CHURCH MINISTRIES' },
                 { id: 'giving', label: 'ONLINE GIVING & TITHES' },
-                { id: 'connect', label: 'CONTACT SANCTUARY' },
+                { id: 'connect', label: 'CONTACT CHURCH' },
               ].map((link) => (
                 <li key={link.id}>
                   <button
@@ -125,7 +125,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync, onO
           {/* Col 4: Contact & Location */}
           <div className="space-y-2.5">
             <h4 className="font-cinzel text-xs font-bold text-[#fbbf24] uppercase tracking-wider mb-3">
-              Contact & Sanctuary
+              Contact & Church
             </h4>
             <div className="flex items-start gap-2 text-slate-300">
               <MapPin className="w-4 h-4 text-[#fbbf24] flex-shrink-0 mt-0.5" />
@@ -152,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocalSync, onO
                 className="w-full py-2 px-3 rounded-lg bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border border-[#25D366]/40 text-xs font-semibold transition-colors flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-3.5 h-3.5" />
-                <span>WhatsApp Sanctuary</span>
+                <span>WhatsApp Church</span>
               </a>
 
               {onOpenDatabase && (

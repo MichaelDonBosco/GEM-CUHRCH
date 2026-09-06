@@ -267,13 +267,13 @@ export const ConnectSection: React.FC = () => {
           {/* Location & Times Details */}
           <div className="bg-stone-50 rounded-2xl p-6 border border-stone-200 space-y-4 text-xs text-stone-700">
             <h4 className="font-cinzel text-base font-bold text-[#043e32]">
-              Sanctuary Location & Contacts
+              Church Location & Contacts
             </h4>
 
             <div className="flex items-start gap-3">
               <MapPin className="w-4 h-4 text-[#043e32] flex-shrink-0 mt-0.5" />
               <div>
-                <div className="font-bold text-stone-900">Sanctuary Address</div>
+                <div className="font-bold text-stone-900">Church Address</div>
                 <div className="text-stone-600">7V/6B SundaravelPuram, Tuticorin – 628002</div>
                 <div className="text-[11px] text-[#043e32] font-semibold mt-0.5">Tuticorin, Tamil Nadu, India</div>
               </div>

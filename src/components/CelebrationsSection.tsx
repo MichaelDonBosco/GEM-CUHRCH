@@ -14,7 +14,10 @@ import {
   MapPin, 
   Share2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  X,
+  Camera
 } from 'lucide-react';
 import { BelieverCelebration } from '../types';
 import { churchDb } from '../services/db';
@@ -54,8 +57,26 @@ export const CelebrationsSection: React.FC = () => {
     phone: '',
     area: '',
     spouseName: '',
-    notes: ''
+    notes: '',
+    photoUrl: ''
   });
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Please select an image smaller than 5MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormData(prev => ({ ...prev, photoUrl: event.target!.result as string }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const today = new Date();
   const currentMonth = today.getMonth() + 1;
@@ -131,6 +152,7 @@ export const CelebrationsSection: React.FC = () => {
       spouseName: formData.type === 'anniversary' ? formData.spouseName.trim() : undefined,
       notes: formData.notes.trim(),
       wishesCount: 1,
+      photoUrl: formData.photoUrl.trim() || undefined,
       isRegisteredByUser: true
     };
 
@@ -145,7 +167,8 @@ export const CelebrationsSection: React.FC = () => {
       phone: '',
       area: '',
       spouseName: '',
-      notes: ''
+      notes: '',
+      photoUrl: ''
     });
   };
 
@@ -361,15 +384,31 @@ export const CelebrationsSection: React.FC = () => {
                   </span>
                 </div>
 
-                <h4 className="font-cinzel text-base font-bold text-white">{item.name}</h4>
-                {item.spouseName && (
-                  <div className="text-xs text-rose-200">With {item.spouseName}</div>
-                )}
-                <div className="text-xs text-emerald-200/80 flex items-center gap-1 mt-1">
-                  <MapPin className="w-3 h-3 text-[#fbbf24]" />
-                  <span>{item.area}</span>
+                <div className="flex items-center gap-3 my-2">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#fbbf24]/60 bg-[#011712] flex-shrink-0 flex items-center justify-center shadow-md">
+                    {item.photoUrl ? (
+                      <img 
+                        src={item.photoUrl} 
+                        alt={item.name} 
+                        className="w-full h-full object-cover" 
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <User className="w-6 h-6 text-emerald-300/70" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-cinzel text-base font-bold text-white leading-tight truncate">{item.name}</h4>
+                    {item.spouseName && (
+                      <div className="text-xs text-rose-200 truncate">With {item.spouseName}</div>
+                    )}
+                    <div className="text-xs text-emerald-200/80 flex items-center gap-1 mt-0.5 truncate">
+                      <MapPin className="w-3 h-3 text-[#fbbf24] flex-shrink-0" />
+                      <span className="truncate">{item.area}</span>
+                    </div>
+                  </div>
                 </div>
-                {item.notes && <p className="text-[11px] text-slate-400 mt-1 italic">{item.notes}</p>}
+                {item.notes && <p className="text-[11px] text-slate-400 mt-1 italic line-clamp-2">{item.notes}</p>}
               </div>
 
               <div className="mt-4 pt-3 border-t border-[#065f46]/60 flex items-center justify-between gap-2">
@@ -396,7 +435,7 @@ export const CelebrationsSection: React.FC = () => {
         {/* Add Member Modal Provision */}
         {showAddModal && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#02241d] rounded-2xl max-w-md w-full p-6 border border-[#fbbf24]/40 shadow-2xl text-white">
+            <div className="bg-[#02241d] rounded-2xl max-w-md w-full p-6 border border-[#fbbf24]/40 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
               <h3 className="font-cinzel text-xl font-bold text-[#fbbf24] uppercase tracking-wider mb-1">
                 Register Believer Date
               </h3>
@@ -426,6 +465,96 @@ export const CelebrationsSection: React.FC = () => {
                     >
                       Anniversary
                     </button>
+                  </div>
+                </div>
+
+                {/* Profile Picture Upload & Presets */}
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">
+                    Profile Picture (Optional)
+                  </label>
+                  <div className="p-3 rounded-xl bg-[#011712] border border-[#065f46] flex items-center gap-3">
+                    <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#fbbf24] bg-stone-900 flex-shrink-0 flex items-center justify-center shadow-inner">
+                      {formData.photoUrl ? (
+                        <img 
+                          src={formData.photoUrl} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover" 
+                        />
+                      ) : (
+                        <Camera className="w-6 h-6 text-emerald-400/60" />
+                      )}
+                      {formData.photoUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, photoUrl: '' }))}
+                          className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity text-rose-300 cursor-pointer"
+                          title="Remove photo"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex-1 space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <label
+                          htmlFor="celebration-photo-file"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#043e32] hover:bg-[#065f46] text-[#fbbf24] border border-[#065f46] font-semibold text-[11px] cursor-pointer transition-colors shadow-xs"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Upload From Device</span>
+                        </label>
+                        <input
+                          id="celebration-photo-file"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handlePhotoUpload}
+                        />
+                        {formData.photoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, photoUrl: '' }))}
+                            className="text-[11px] text-rose-400 hover:text-rose-300 underline cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="Or paste photo URL..."
+                        value={formData.photoUrl}
+                        onChange={(e) => setFormData(prev => ({ ...prev, photoUrl: e.target.value }))}
+                        className="w-full px-2.5 py-1 text-[11px] rounded bg-[#02241d] border border-[#065f46] text-white placeholder-slate-400 focus:outline-none focus:border-[#fbbf24]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Quick Avatar Presets */}
+                  <div className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+                    <span className="text-[10px] text-slate-400 font-medium flex-shrink-0">Quick presets:</span>
+                    {[
+                      { label: 'Brother', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80' },
+                      { label: 'Sister', url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80' },
+                      { label: 'Couple', url: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=300&q=80' },
+                      { label: 'Family', url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=300&q=80' }
+                    ].map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, photoUrl: preset.url }))}
+                        className={`px-2 py-0.5 rounded text-[10px] border transition-colors flex items-center gap-1 flex-shrink-0 cursor-pointer ${
+                          formData.photoUrl === preset.url
+                            ? 'bg-[#fbbf24] text-[#043e32] border-[#fbbf24] font-bold'
+                            : 'bg-[#011712] text-slate-300 border-[#065f46] hover:border-emerald-400'
+                        }`}
+                      >
+                        <img src={preset.url} alt="" className="w-3.5 h-3.5 rounded-full object-cover" />
+                        <span>{preset.label}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
 

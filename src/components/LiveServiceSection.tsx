@@ -55,7 +55,7 @@ export const LiveServiceSection: React.FC<{ onNavigate: (tab: string) => void }>
       <div className="text-center max-w-3xl mx-auto mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-[#043e32]/10 text-[#043e32] border border-[#043e32]/20 mb-3">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-          <span>GEM Church Online Sanctuary • Tuticorin</span>
+          <span>GEM Church Online Service • Tuticorin</span>
         </div>
         <h2 className="font-cinzel text-3xl sm:text-4xl font-bold text-[#043e32]">
           Worship With Us Live
@@ -98,7 +98,7 @@ export const LiveServiceSection: React.FC<{ onNavigate: (tab: string) => void }>
                 className="w-5 h-5 rounded-full object-cover" 
                 referrerPolicy="no-referrer"
               />
-              <span className="font-cinzel text-[11px] font-bold text-[#fbbf24] tracking-wider pr-1">GEM SANCTUARY</span>
+              <span className="font-cinzel text-[11px] font-bold text-[#fbbf24] tracking-wider pr-1">GEM CHURCH</span>
             </div>
 
             {/* Stream Center Play / Audio Overlay */}
@@ -174,7 +174,7 @@ export const LiveServiceSection: React.FC<{ onNavigate: (tab: string) => void }>
             <div className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-[#043e32]" />
               <h4 className="text-sm font-bold text-[#043e32]">
-                Sanctuary Live Fellowship
+                Church Live Fellowship
               </h4>
             </div>
             <span className="text-[11px] text-slate-500 font-medium">Moderated</span>

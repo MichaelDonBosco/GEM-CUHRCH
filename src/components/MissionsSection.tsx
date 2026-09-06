@@ -16,7 +16,7 @@ export const MissionsSection: React.FC<MissionsSectionProps> = ({ onSupportField
     { id: 'Nepal', label: 'Nepal' },
     { id: 'Bhutan', label: 'Bhutan' },
     { id: 'India', label: 'India Fields' },
-    { id: 'Tamil Nadu', label: 'Tuticorin Sanctuary' }
+    { id: 'Tamil Nadu', label: 'Tuticorin Church' }
   ];
 
   const filteredFields = selectedRegion === 'all' 

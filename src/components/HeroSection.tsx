@@ -120,20 +120,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate, onSelectSe
         {/* Live Service Countdown Bar */}
         <div className="max-w-4xl mx-auto bg-[#02241d]/90 border border-[#065f46] rounded-2xl p-6 shadow-2xl backdrop-blur-md mb-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4 text-center md:text-left">
-              <div className="w-12 h-12 rounded-xl bg-[#043e32] border border-[#fbbf24]/40 flex items-center justify-center text-[#fbbf24] flex-shrink-0">
+            <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 text-left">
+              <div className="w-12 h-12 rounded-xl bg-[#043e32] border border-[#fbbf24]/40 flex items-center justify-center text-[#fbbf24] flex-shrink-0 shadow-inner mt-0.5 sm:mt-0">
                 <Clock className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-xs uppercase tracking-wider font-semibold text-[#fbbf24]">
+                <div className="text-[11px] sm:text-xs uppercase tracking-wider font-bold text-[#fbbf24]">
                   Next Worship Gathering
                 </div>
-                <div className="text-base font-bold text-white mt-0.5">
+                <div className="text-base sm:text-lg font-bold text-white leading-snug mt-0.5">
                   Sunday Celebration Service (தமிழ் ஆராதனை)
                 </div>
-                <div className="text-xs text-emerald-200/80 flex items-center justify-center md:justify-start gap-1 mt-0.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#fbbf24]" />
-                  <span>Main Sanctuary, Tuticorin & Online Live • 9:00 AM</span>
+                <div className="text-xs text-emerald-200/90 flex items-center gap-1.5 mt-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#fbbf24] flex-shrink-0" />
+                  <span className="leading-tight">GEM Church, Tuticorin & Online Live • 9:00 AM</span>
                 </div>
               </div>
             </div>
