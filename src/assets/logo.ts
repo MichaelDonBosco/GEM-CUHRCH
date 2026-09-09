@@ -1,5 +1,5 @@
 // Official Glorious Evangelical Ministries (GEM Church Tuty) Logo and Colors from gem-cuhrch.vercel.app
-export const GEM_CHURCH_LOGO = '/gem-logo.jpg';
+export const GEM_CHURCH_LOGO = '/gem-logo.png';
 export const GEM_CHURCH_LOGO_REMOTE = 'https://i.postimg.cc/Bv1wzvn6/Whats_App_Image_2026_02_26_at_17_40_51.jpg';
 export const PASTOR_REV_NAVARATNAM_PHOTO = '/pastor-rev-navaratnam.png';
 export const PASTOR_PHOTO_REMOTE = 'https://i.postimg.cc/4Nnh6Hds/Whats_App_Image_2024_04_11_at_19_57_04_d9a24723_removebg_preview.png';
